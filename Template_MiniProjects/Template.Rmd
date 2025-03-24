@@ -1,0 +1,195 @@
+---
+title: "Project Title"
+author: "By xxx (i.e. your ID)"
+date: "dd/mm/yyyy"
+output:
+  pdf_document: default
+  html_document:
+    fig_caption: true
+header-includes: \usepackage{bm}
+bibliography: biblio.bib
+abstract: Lower Respiratory Tract Infections (LRTI), including Pneumonia, remain a leading cause of mortality globally and in the UK. In 2024, WHO ranked LRTI as the 5th most common cause of death worldwide. This dropped to 8th in high income countries, suggesting socioeconomic position may increase risk. Understanding area level risk patterns and the role of deprivation and physical activity may therefore inform public health policy. This report quantifed spatial and spatiotemporal variation in pneumonia mortality across England's local authorities from 2002 - 2017. A Bayesian spatial BYM2 model identified persistent high risk clusters (INSERT LOCATIONS). The spatio temporal model highlighted a general decreasing trend over the study period. Including standardised deprivation and physical activity reduced our WAIC by *AMOUNT* as well as reducing spatial variation. A 1SD increase in deprivation was associated with a *X* increase in mortality, whilst a 1SD increase in physical activity conferred *X* lower risk. Overall we see spatio-temporal clustering of pneumonia mortality, explained in part by deprivation and physical activity differences. Therefore, focussing resources on modifiable risk factors, in the areas identified may lead to improvement in mortality outcomes. 
+---
+  
+\pagenumbering{gobble} 
+\pagenumbering{arabic} 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE, fig.align = "center", class.source='klippy')
+```
+
+
+```{r eval=TRUE, echo=FALSE}
+# Load the libraries you will use for the mini-project report
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+```
+
+
+
+# Introduction
+
+
+This section should convey two key pieces of information: the background information necessary to place the scientific report in context, and the clear and complete specification of the purpose(s). In particular, think about:
+
+*What is known about the subject*
+- Pneumonia/LRTI common cause of death globally, mortality rates differentiated by socioeconomic status + ?physical activity = WHO
+- socioeconomic deprivation linked to higher risk (CITE)
+- Physical activity linked to lower risk 
+
+
+*What is not known*
+- whether fine scale geographic variation in pneumonia mortality across england has been quantified (probably has, but maybe for purposes of this report)
+- spatio temporal and spatial trends + how they are associated with physical/deprivation in england 
+
+*Why is it important to fill this research gap*
+- identifying high risk areas - allows public health resource distribution + targetted interventions
+- understanding modifiable risk factors/which ones are relevant is important for structuring health policy 
+- generating robust + spatially explicit evidence important for lowering mortality from pneumonia 
+
+*What is exactly the research question*
+What are the spatial and spatiotemporal patterns of pneumonia across england from 2002 - 2017. 
+
+To what extend do area-level deprivation and physical activity explain observed geographic differences in pneumonia mortality. 
+
+To include citations, please refers to the practicals used in our module and the file of the Instructions. 
+
+
+
+
+# Methods
+
+* This section should describe: 
+(1) the study design, 
+(2) the data used,
+(3) how these data are analysed.
+
+* Feel free to include subsections.
+
+* To include equations, you can refer to the R-Markdown files used during  the Sessions and practicals.
+
+* Being this scientific mini-project report structured as a paper, you should not print the R code here.
+However, you are asked to specify the entire R code as embedded in the report or as supplementary material, so that the reproducibility of your results can be assessed. 
+
+* In the global chunk options of this template, we set (`echo=TRUE`) so the code will shown in the final document. If you need to change it, you can modify the option in the initial line of each code chunks, or directly in global chunk options. Examples are provided in all our Practicals. Here some further examples:
+
+(i) As in the global chunk options we set `echo=TRUE` as well as in the chunk line, the R code and the plot will be shown in the final document: 
+
+```{r eval=TRUE, echo=TRUE, fig.cap="Figure 1: Plot of x and y"}
+set.seed(123)
+x = rnorm(300)
+y = 2*x + rnorm(300)
+plot(x, y)
+```
+
+(ii) However, if you want to change it, you can modify the current line of the code chunk setting `echo=FALSE` and the R code will not be displayed:
+
+```{r eval=TRUE, echo=FALSE, fig.cap="Figure 1: Plot of x and y"}
+set.seed(123)
+x = rnorm(300)
+y = 2*x + rnorm(300)
+plot(x, y)
+```
+
+(iii) Moreover, if you set `include=FALSE` in the line of the code chunk, it indicates that the chunk will be evaluated, but neither the code nor its output will be displayed.
+
+```{r include=FALSE}
+set.seed(123)
+x = rnorm(300)
+y = 2*x + rnorm(300)
+plot(x, y)
+```
+
+
+# Results
+
+* This section should organize the results so that they follow a logical sequence. 
+Tables and figures are precious tools to communicate your results but they should not repeat the information reported in the text. 
+
+* To include plots/maps and tables, you can refer to the R-Markdown files used during the Labs of the module.
+For plots/maps, feel free to choose the appropriate width and height. To modify the dimensions of the plots specified in the global chunk options, you can use options like `fig.width`, `fig.height` or `fig.cap` in the line of the code chunk. 
+
+* To include an external image, you can use the R function:
+
+```{r, eval=TRUE, echo=TRUE, out.width="30%", fig.cap="A nice image"}
+knitr::include_graphics("nice_image.jpeg")
+```
+
+
+# Discussion and conclusion
+
+This section should synthetically discuss your answer to the research question and how your findings compare or contrast with previous results. 
+You can refer to the potential implications and future perspectives and/or application of present work. Think about:
+
+-	Your key results 
+
+-	What your study adds
+
+-	Comparison with existing literature/interpretation of findings 
+
+-	Strength  and weakness of your study
+
+-	Recommendation for future research and/or for policies 
+
+
+
+# Supplementary material
+
+Include here the supplementary material, such as the code (this is mandatory) or additional exploratory analyses or maps/plots. 
+The Supplementary material is an extra session, additional to the 5-pages of actual scientific mini-project report. 
+To include the code, you could include it into the code chunk, setting `eval=FALSE` and `echo=TRUE`. Here an example:
+
+```{r eval=FALSE, echo=TRUE}
+# formula
+formula = y ~ -1 + Intercept + xmaxtemp + xwdsp + xrh + 
+  f(spatial.field,
+    model = spde,
+    group = spatial.field.group,
+    control.group = list(model = "ar1",
+                         hyper=rho_hyper))
+
+# fit the model
+fit = inla(
+  formula,
+  data = inla.stack.data(stack, spde = spde),
+  family = "gaussian",
+  control.predictor = list(A = inla.stack.A(stack), 
+                           compute = TRUE),
+  control.compute = list(return.marginals.predictor = TRUE))   
+  
+summary(fit)
+
+# plot marginal posteriors for the fixed effects
+modfix = fit$summary.fixed
+modfix
+
+par(mgp=c(2.2,0.45,0), tcl=-0.4, mar=c(3.3,4,2,2))
+par(mfrow=c(2,2))
+
+plot(fit$marginals.fix[[1]],type ='l',xlab=expression(beta[0]),ylab="density")
+abline(v = modfix[1, c(3, 5)], lty=2)
+
+plot(fit$marginals.fix[[2]],type ='l',xlab=expression(beta[max.temp]),ylab="density")
+abline(v = modfix[2, c(3, 5)], lty=2)
+
+plot(fit$marginals.fix[[3]],type ='l',xlab=expression(beta[w.speed]),ylab="density")
+abline(v = modfix[3, c(3, 5)], lty=2)
+
+plot(fit$marginals.fix[[4]],type ='l',xlab=expression(beta[rh]),ylab="density")
+abline(v = modfix[4, c(3, 5)], lty=2)
+
+```
+
+# References 
+
+* You should update the attached file `biblio.bib` with your references.
+
+* The references cited in the mini-project report will be automatically inserted after this header. 
+
+
+
+
+
+
+
