@@ -1,0 +1,426 @@
+---
+title: "data_exploration"
+output: pdf_document
+date: "2025-03-24"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+rstudioapi::getSourceEditorContext()$path
+library(sf)
+RESP_DATA = read.csv("Data_final.csv")
+shape_file = st_read("LocalAuthorities.shp")
+```
+```{r}
+RESP_DATA
+```
+```{r}
+# we consider yearly pneumonia deaths the equivalent of 'hospital admissions for respiratory conditions in greater glasgow and clyde'
+
+# we start by computing the total number of cases of deaths per year, and format output in a table. 
+
+kable(RESP_DATA %>%
+        group_by(Year_death) %>%
+         summarise(Y = sum(Y), expected=sum(E)), booktabs = T, caption = "Hospital admissions by year") %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "center")
+```
+
+```{r}
+# now plot the spatial object using ggplot2: 
+
+ggplot() + 
+      geom_sf(data = shape_file, color = "blue", fill = "white") + 
+      coord_sf() +    #axis limits and CRS
+      theme_bw() +    # dark-on-light theme
+      theme(axis.title = element_text(size = 14),
+            axis.text = element_text(size = 12))
+```
+
+
+```{r}
+# in order to use the same data structure for both the space-only model and later the space-time model, new set of data is formed 
+# by aggregating both observed and expected counts over time, poisson-log linear model then fitted, assuming BYM2 model for random effects 
+# define neighbors and create weights list 
+
+shape_nb = poly2nb(shape_file, snap = 1000, queen = TRUE)
+summary(shape_nb)
+```
+```{r}
+# now convert list of neighbors to inla format using nb2WB
+
+nb2INLA("shape.graph", shape_nb)
+shape.adj = paste(getwd(), "/shape.graph", sep = "")
+```
+
+```{r}
+# aggregate observed and expected cases over geographical areas 
+
+RESP_DATAagg = RESP_DATA %>% group_by(lad09cd) %>%
+  summarize(observed = sum(Y), 
+            expected = sum(E)) %>% 
+  dplyr::rename(O = observed, E = expected)
+
+RESP_DATAagg = RESP_DATAagg %>% mutate(SMR = O/E)
+```
+
+```{r}
+RESP_DATAagg
+```
+
+
+```{r}
+# produce a spatial map of aggregated SMRs using ggplot2. 
+
+RESP_DATAagg$SMRcat = cut(RESP_DATAagg$SMR, 
+                      breaks=c(min(RESP_DATAagg$SMR), 
+                               0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 
+                               max(RESP_DATAagg$SMR)), include.lowest = T)
+
+map_SMR = left_join(shape_file, RESP_DATAagg, by = c("lad09cd" = "lad09cd"))
+```
+
+```{r}
+ggplot() + geom_sf(data = map_SMR, col = NA) + aes(fill = SMRcat) +
+  theme_bw() + scale_fill_viridis_d() + 
+  guides(fill=guide_legend(title="SMR")) 
+
+# map of the average SMRs over the period 2007 - 2011
+```
+
+```{r}
+map_SMR
+```
+
+```{r}
+nrow(RESP_DATAagg)
+```
+
+
+
+```{r}
+# fit the hierarchical poisson log-linear model in INLA. 
+ID = seq(1,322)
+formula_BYM2 = O ~ f(ID, model="bym2", graph=shape.adj,
+                            hyper=list(prec = list(
+        prior = "pc.prec",
+        param = c(0.5 / 0.31, 0.01)),
+        phi = list(
+        prior = "pc",
+        param = c(0.5, 2 / 3))))    
+
+sBYM.model = inla(formula=formula_BYM2, family="poisson", data=RESP_DATAagg, E=E, control.compute=list(waic=TRUE))
+```
+
+```{r}
+# obtain posterior summary statistics mean/posterior probability that the residual is above 1) of the parameters of interest 
+
+#Relative risks
+RR_sBYM = c()
+
+for(i in 1:322){
+  RR_sBYM[i] = inla.emarginal(function(x) exp(x), 
+        sBYM.model$marginals.random$ID[[i]])
+}
+
+#Posterior probabilities
+RR_sBYM_marg = sBYM.model$marginals.random$ID[1:322]
+PP_sBYM = lapply(RR_sBYM_marg, function(x) {1-inla.pmarginal(0,x)})
+```
+
+```{r}
+# obtain the posterior estimates from the spatial model to be plotted, that is (i) area level posterior mean of residual RR 
+# ii) the posterior probability that the residual RRs > 1
+
+resRR_PP = data.frame(resRR=RR_sBYM, 
+                       PP=unlist(PP_sBYM),
+                      SP_ID=RESP_DATAagg[,1])
+```
+
+```{r}
+# produce map of posterior mean of residual RRs and posterior probabilities that residual RRS are > 1
+
+resRR_PP$resRRcat = cut(resRR_PP$resRR, breaks=c(min(resRR_PP$resRR), 
+                  0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 
+                  max(resRR_PP$resRR)),include.lowest = T)
+
+
+# breakpoints
+resRR_PP$PPcat = cut(resRR_PP$PP, c(0, 0.2, 0.8, 1.00), include.lowest = TRUE)
+
+# join sf object and dataframe with posterior estimates. 
+
+map_RR_PP = left_join(shape_file, resRR_PP, by = c("lad09cd" = "lad09cd"))
+
+
+# produce maps 
+
+p1 = ggplot() + geom_sf(data = map_RR_PP) + aes(fill = resRRcat) +
+  theme_bw() + scale_fill_brewer(palette = "PuOr") + 
+  guides(fill=guide_legend(title="RR")) + ggtitle("RR Spatial model") + 
+  theme(text = element_text(size=15), 
+                  axis.text.x = element_blank(), 
+                  axis.text.y = element_blank(), plot.title = element_text(size = 12, face = "bold"))
+
+p2 = ggplot() + geom_sf(data = map_RR_PP) + aes(fill = PPcat) +
+  theme_bw() +
+  scale_fill_viridis(
+    option = "plasma", name="PP",
+    discrete = T,
+    direction = -1,
+    guide = guide_legend(
+      title.position = 'top',
+      reverse = T
+    )) +  ggtitle("PP Spatial model") + theme(text = element_text(size=15), 
+                  axis.text.x = element_blank(), 
+                  axis.text.y = element_blank(), plot.title = element_text(size = 12, face = "bold")) 
+
+p1|p2
+
+# the BYM2 model smooths raw SMRs by borrowing strength from neighbouring areas while still allowing for independent noise. The PC guards against overfitting
+
+# first map tells you magnitude of excess or reduced risk after smoothing away random noise 
+
+# second map is about how certain we are that RR > 1 i.e. if PP close to 0, then strong evidence that areas risk is actually below average, PP>0.8 strong evidence areas risk above average 
+
+# therefore light and dark areas are strongest evidence for real excess risk (positive or negative)
+
+```
+
+```{r}
+# estimate the spatial fraction 
+# as bymw has structured and unstructured components useful to get ideas about strength of spatially structured componets to indicate clustering in data 
+
+sBYM.model$summary.hyperpar # says about 0.4 of spatial variablity explained by spatiall structured component 
+```
+
+```{r}
+RESP_DATA
+```
+
+```{r}
+RESP_DATA_ST
+```
+
+^
+```{r}
+# now we do a spatio-temporal model - no interactions 
+
+# first prepare data, we join shapefile to make sure order is the same and create ID for time and one for space 
+
+#Join the data with the shapefile so the order of the shapefile is maintained.  
+RESP_DATA_ST = left_join(shape_file, RESP_DATA, by="lad09cd")
+
+#Rename the columns of Observed and Expected as we did before
+RESP_DATA_ST = RESP_DATA_ST  %>% dplyr::rename(O = Y, E = E)
+
+#Create the ID for year (time)
+RESP_DATA_ST$ID.time = RESP_DATA_ST$Year_death - 2002
+
+#Create the ID for space
+RESP_DATA_ST$ID.space = rep(seq(1,322),each=16)
+```
+
+```{r}
+
+# run the model in INLA
+
+formula_ST_noint = O ~ f(ID.space, model="bym2", graph=shape.adj,
+                            hyper=list(prec = list(
+                            prior = "pc.prec",
+                            param = c(0.5 / 0.31, 0.01)),
+                            phi = list(
+                            prior = "pc",
+                            param = c(0.5, 2 / 3)))) + f(ID.time,model="rw1", hyper=list(prec = list(
+                            prior = "pc.prec",
+                            param = c(0.5 / 0.31, 0.01))))
+                            
+stBYM.model = inla(formula=formula_ST_noint, family="poisson", 
+                   data=RESP_DATA_ST, E=E, 
+                   control.compute=list(waic=TRUE))
+
+
+```
+
+```{r}
+# create the posterior mean for the spatial and temporal effects 
+
+RR_stBYM = c()
+
+for(i in 1:322){
+  RR_stBYM[i] = inla.emarginal(function(x) exp(x), 
+        stBYM.model$marginals.random$ID.space[[i]])
+}
+
+#Posterior probabilities (for spatial RR)
+RR_stBYM_marg = stBYM.model$marginals.random$ID.space[1:322]
+PP_stBYM = lapply(RR_stBYM_marg, function(x) {1-inla.pmarginal(0,x)})
+
+#Temporal Relative risks and CI95
+RR_stRW_RR = c()
+RR_stRW_lo = c()
+RR_stRW_hi = c()
+
+for(i in 1:16){
+  #Posterior mean
+  RR_stRW_RR[i] = inla.emarginal(function(x) exp(x), 
+        stBYM.model$marginals.random$ID.time[[i]])
+  #2.5% quantile 
+  RR_stRW_lo[i] = inla.qmarginal(0.025,inla.tmarginal(function(x) exp(x), stBYM.model$marginals.random$ID.time[[i]]))
+  #97.5% quantile 
+  RR_stRW_hi[i] = inla.qmarginal(0.975, inla.tmarginal(function(x) exp(x), stBYM.model$marginals.random$ID.time[[i]]))
+}
+
+RR_stRW = data.frame(RR=RR_stRW_RR,low=RR_stRW_lo,high=RR_stRW_hi)
+
+
+```
+
+```{r}
+# plot the temporal residuals 
+Temp1 = ggplot(RR_stRW, aes(seq(2002,2017), RR)) + geom_line() + ggtitle("ST model No Int") + geom_ribbon(aes(ymin=low,ymax=high), alpha=0.2) + labs(x="year")
+
+Temp1
+```
+```{r}
+typeof(shape.adj)
+```
+
+
+```{r}
+# map the spatial residuals RRs with ggplot2. Compare this map of residual RR obtained from spatial model 
+resRR_PP_st = data.frame(resRR=RR_stBYM, 
+                       PP=unlist(PP_stBYM),
+                      SP_ID=RESP_DATAagg[,1])
+# breakpoints
+resRR_PP_st$resRRcat = cut(resRR_PP_st$resRR, breaks=c(min(resRR_PP_st$resRR), 
+                  0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 
+                  max(resRR_PP_st$resRR)),include.lowest = T)
+
+resRR_PP_st$PPcat = cut(resRR_PP_st$PP, c(0, 0.2, 0.8, 1.00), include.lowest = TRUE)
+
+map_RR_ST = left_join(shape_file, resRR_PP_st, by = c("lad09cd" = "lad09cd"))
+
+
+p3 = ggplot() + geom_sf(data = map_RR_ST) + aes(fill = resRRcat) +
+  theme_bw() + scale_fill_brewer(palette = "PuOr") + 
+  guides(fill=guide_legend(title="RR")) +  ggtitle("RR ST model") +
+  theme(text = element_text(size=15), 
+        axis.text.x = element_blank(), 
+        axis.text.y = element_blank(), plot.title = element_text(size = 12, face = "bold")) 
+
+p4 = ggplot() + geom_sf(data = map_RR_ST) + aes(fill = PPcat) +
+  theme_bw() +
+  scale_fill_viridis(
+    option = "plasma",
+    name = "PP ST model",
+    discrete = T,
+    direction = -1,
+    guide = guide_legend(
+      title.position = 'top',
+      reverse = T
+    )) +  ggtitle("PP ST model") + theme(text = element_text(size=15), 
+        axis.text.x = element_blank(), 
+        axis.text.y = element_blank(), plot.title = element_text(size = 12, face = "bold"))
+
+(p1|p2) / (p3|p4)
+```
+
+```{r}
+# next steps are to add deprivation and physical activity 
+
+# make sure they are standardised 
+
+RESP_DATA_ST = RESP_DATA_ST %>% 
+  mutate(deprivation_s = scale(Deprivation), 
+         physact_s  = scale(PhysicalActivity))
+
+RESP_DATA_ST
+```
+```{r}
+# update model formula 
+
+formula_cov <- O ~ deprivation_s + physact_s +
+  f(ID.space, model="bym2", graph=shape.adj,
+    hyper=list(
+      prec = list(prior="pc.prec", param=c(0.5/0.31, 0.01)),
+      phi  = list(prior="pc",       param=c(0.5, 2/3))
+    )) +
+  f(ID.time, model="rw1",
+    hyper=list(
+      prec = list(prior="pc.prec", param=c(0.5/0.31, 0.01))
+    ))
+```
+
+```{r}
+# refit in INLA and compare WAIC
+stBYM_cov <- inla(
+  formula_cov,
+  family="poisson",
+  data=RESP_DATA_ST,
+  E=E,
+  control.compute=list(waic=TRUE)
+)
+stBYM_cov$waic$waic
+```
+
+```{r}
+cat("No‑covariate WAIC =", stBYM.model$waic$waic, "\n",
+    "Covariate‑adjusted WAIC =", stBYM_cov$waic$waic, "\n")
+```
+
+
+```{r}
+fixed <- stBYM_cov$summary.fixed[, c("mean","0.025quant","0.975quant")]
+fixed_rr <- exp(fixed)
+rownames(fixed_rr) <- c("Intercept","Deprivation (1 SD)","Physical activity (1 SD)")
+round(fixed_rr, 3)
+```
+
+```{r}
+RR_cov <- sapply(stBYM_cov$marginals.random$ID.space, 
+                 function(m) inla.emarginal(function(x) exp(x), m))
+PP_cov <- sapply(stBYM_cov$marginals.random$ID.space, 
+                 function(m) 1 - inla.pmarginal(0, m))
+res_cov <- data.frame(lad09cd=unique(RESP_DATAagg$lad09cd), resRR=RR_cov, PP=PP_cov)
+
+res_cov$resRRcat <- cut(res_cov$resRR, breaks=c(min(res_cov$resRR),0.4,0.6,0.8,1,1.2,1.4,1.6,max(res_cov$resRR)))
+res_cov$PPcat <- cut(res_cov$PP, breaks=c(0,0.2,0.8,1), include.lowest=TRUE)
+
+map_cov <- left_join(shape_file, res_cov, by="lad09cd")
+
+p3 <- ggplot(map_cov) + geom_sf(aes(fill=resRRcat)) +
+      theme_bw() + scale_fill_brewer(palette="PuOr") + 
+      ggtitle("Residual RR — ST model w/ covariates")
+
+p4 <- ggplot(map_cov) + geom_sf(aes(fill=PPcat)) +
+      theme_bw() + scale_fill_viridis(discrete=TRUE, direction=-1) +
+      ggtitle("Posterior P(RR>1) — ST model w/ covariates")
+
+(p3|p4)
+
+```
+
+```{r}
+# temporal analysis as well 
+
+temporal <- data.frame(
+  year = 2002:2017,
+  RR   = sapply(stBYM_cov$marginals.random$ID.time, 
+                function(m) inla.emarginal(function(x) exp(x), m)),
+  low  = sapply(stBYM_cov$marginals.random$ID.time,
+                function(m) exp(inla.qmarginal(0.025, m))),
+  high = sapply(stBYM_cov$marginals.random$ID.time,
+                function(m) exp(inla.qmarginal(0.975, m)))
+)
+
+ggplot(temporal, aes(year, RR)) +
+  geom_line() +
+  geom_ribbon(aes(ymin=low, ymax=high), alpha=0.2) +
+  labs(title="Temporal residual RR — ST model w/ covariates", x="Year", y="Relative risk") +
+  theme_minimal()
+
+```
+
