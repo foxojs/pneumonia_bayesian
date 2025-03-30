@@ -7,7 +7,7 @@ bibliography: biblio.bib
 header-includes: 
   \usepackage{bm}
   \usepackage{float}
-abstract: Lower Respiratory Tract Infections (LRTI), including Pneumonia, remain a leading cause of mortality globally and in the UK. In 2024, WHO ranked LRTI as the 5th most common cause of death worldwide. This dropped to 8th in high income countries, suggesting socioeconomic position may increase risk. Understanding area level risk patterns and the role of deprivation and physical activity may therefore inform public health policy. This report quantifed spatial and spatiotemporal variation in pneumonia mortality across England's local authorities from 2002 - 2017. A Bayesian spatial BYM2 model identified persistent high risk clusters (INSERT LOCATIONS). The spatio temporal model highlighted a general decreasing trend over the study period. Including standardised deprivation and physical activity reduced our WAIC by *AMOUNT* as well as reducing spatial variation. A 1SD increase in deprivation was associated with a *X* increase in mortality, whilst a 1SD increase in physical activity conferred *X* lower risk. Overall we see spatio-temporal clustering of pneumonia mortality, explained in part by deprivation and physical activity differences. Therefore, focussing resources on modifiable risk factors, in the areas identified may lead to improvement in mortality outcomes. 
+abstract: Lower Respiratory Tract Infections (LRTI), including Pneumonia, remain a leading cause of mortality globally and in the UK. In 2024, WHO ranked LRTI as the 5th most common cause of death worldwide [@who2024causes]. This dropped to 8th in high income countries, suggesting socioeconomic position may increase risk. Understanding area level risk patterns and the role of deprivation and physical activity may therefore inform public health policy. This report quantifed spatial and spatiotemporal variation in pneumonia mortality across England's local authorities from 2002 - 2017. A Bayesian spatial BYM2 model identified persistent high risk clusters in London and the North West. The spatio temporal model highlighted a general decreasing trend over the study period. Including standardised deprivation and physical activity in our spatio temporal model, reduced our WAIC as well as reducing spatial variation. A 1SD increase in deprivation was associated with a 1.077 increase in the relative risk of mortality (RR 1.077, 95% CI 1.058 - 1.097), whilst a 1SD increase in physical activity conferred a statistically non significant lower risk (RR 0.997, 95% CI 0.981 - 1.014). Overall we see spatio-temporal clustering of pneumonia mortality, explained in part by deprivation. Therefore, focussing resources on modifiable risk factors, in the areas identified may lead to improvement in mortality outcomes. 
 ---
   
 \pagenumbering{gobble} 
@@ -32,7 +32,7 @@ Pneumonia is a significant cause of mortality worldwide, despite being a prevent
 Socioeconomic deprivation has been recognised as a key determinant of health outcomes, with pneumonia mortality rates being approximately double in the most deprived communities in England [@office2021inhale]. Lifestyle factors, such as decreased physical activity, have also been proposed as risk factors for pneumonia, with active individuals showing a lower risk of developing severe respiratory infections [@Kunutsor2022]. However, evidence at the local level remains limited.
 Using Bayesian spatio-temporal analysis, this study addresses the gap by examining geographic variation and temporal trends in pneumonia mortality across 324 English local authorities from 2002 to 2017.  we employ the BYM2 spatial model to account for both structured spatial dependence and unstructured heterogeneity in pneumonia mortality patterns.
  
-The aim is to quantify local variation and trends in pneumonia mortality, and assess the impact of socioeconomic deprivation and population physical activity. [[ include? Since physical activity was not significant idk = We hypothesise that more deprived areas will show higher pneumonia mortality, while areas with higher physical activity levels may show lower mortality]].  This study intends to inform targeted public health interventions and improve health outcomes by identifying regions characterised by increased pneumonia mortality and higher deprivation,. [[what exactly is our research question?]] -  **”How do socioeconomic deprivation + physical activity levels influence the spatial and temporal patterns of pneumonia mortality across English local authorities between 2002 and 2017?**
+The aim is to quantify local variation and trends in pneumonia mortality, and assess the impact of socioeconomic deprivation and population physical activity. We hypothesise that more deprived areas will show higher pneumonia mortality, while areas with higher physical activity levels may show lower mortality.  This study intends to inform targeted public health interventions and improve health outcomes by identifying regions characterised by increased pneumonia mortality and higher deprivation. We aim to identify if socioeconomic deprivation or physical activity levels influence the spatial and temporal patterns of pneumonia mortality across English local authorities.
 
 # Methods
 
@@ -101,7 +101,7 @@ The initial spatial models in Figure \@ref(fig:initial-spatial-models), fitted w
 knitr::include_graphics("graphics/initial_spatial_models.png")
 ```
 
-Moreover, Table 2 indicates that the spatially structured component in the purely spatial model explains approximately 40% of the spatial variability, supporting the notion of moderate spatial autocorrelation but conversely suggests a large portion of variability is unexplained by the spatially structured component.
+Moreover, Figure \@ref(fig:posterior-summaries-hparams) indicates that the spatially structured component in the purely spatial model explains approximately 40% of the spatial variability, supporting the notion of moderate spatial autocorrelation but conversely suggests a large portion of variability is unexplained by the spatially structured component.
 
 ```{r posterior-summaries-hparams, eval=TRUE, echo=FALSE, out.width="70%", fig.cap="Indication that the spatially structured component in the purely spatial model explains approximately 40% of the spatial variability"}
 knitr::include_graphics("graphics/posterior_summaries_hparams.png")
@@ -149,54 +149,18 @@ Lastly, the WAIC values of all the models facilitate model comparison of the spa
 
 # Discussion
 
-There are several key findings from this analysis. Firstly, pneumonia deaths have steadily decreased over time, and this trend is largely consistent across local authorities in England. This negative temporal trend is an overall improvement in pneumonia-caused mortality. Secondly, moderate to high levels of spatial structure were observed, with high spatial correlations and a substantive portion of spatial variability (40%) explained by the spatially structured component in the initial spatial model. Furthermore, consistently higher relative risks of death by pneumonia were observed in London and the North West. To summarise, consistent spatial autocorrelation (and differences) were observed across England, and the changes in these spaces were also consistent over the period of study, decreasing over time. Regarding the inclusion of covariates, deprivation was found to be associated with higher pneumonia mortality rates but not physical activity. The association of deprivation and respiratory diseases, including pneumonia, is also consistent with past literature (Hawker et-al 2003 & Lawrence, McKeever, Lim 2022). Our research has contributed to existing literature by further refining potential areas of focus for understanding spatial temporal differences in pneumonia deaths, principally: 1) temporal trends for pneumonia are observed across space, so by looking into the factors of this decreasing trend would allow us to better approach the challenge of pneumonia (and respiratory deaths) 2) deprivation is a possible factor contributing to consistent differences in pneumonia mortality across space. Future research could investigate spatial temporal trends of deprivation and pneumonia at a more granular geographic scale. 
+There are several key findings from this analysis. Firstly, pneumonia deaths have steadily decreased over time, and this trend is largely consistent across local authorities in England. This negative temporal trend is an overall improvement in pneumonia-caused mortality. Secondly, moderate to high levels of spatial structure were observed, with high spatial correlations and a substantive portion of spatial variability (40%) explained by the spatially structured component in the initial spatial model. Furthermore, consistently higher relative risks of death by pneumonia were observed in London and the North West. To summarise, consistent spatial autocorrelation (and differences) were observed across England, and the changes in these spaces were also consistent over the period of study, decreasing over time. Regarding the inclusion of covariates, deprivation was found to be associated with higher pneumonia mortality rates but not physical activity. The association of deprivation and respiratory diseases, including pneumonia, is also consistent with past literature (@Hawker2003). 
 
-# References 
+
+# Conclusion 
+
+Our research has contributed to existing literature by further refining potential areas of focus for understanding spatial temporal differences in pneumonia deaths, principally: 1) temporal trends for pneumonia are observed across space, so by looking into the factors of this decreasing trend would allow us to better approach the challenge of pneumonia (and respiratory deaths) 2) deprivation is a possible factor contributing to consistent differences in pneumonia mortality across space. Future research could investigate spatial temporal trends of deprivation and pneumonia at a more granular geographic scale. 
 
 
 # Supplementary material
 
+# References 
 
-```{r eval=FALSE, echo=TRUE}
-# formula
-formula = y ~ -1 + Intercept + xmaxtemp + xwdsp + xrh + 
-  f(spatial.field,
-    model = spde,
-    group = spatial.field.group,
-    control.group = list(model = "ar1",
-                         hyper=rho_hyper))
-
-# fit the model
-fit = inla(
-  formula,
-  data = inla.stack.data(stack, spde = spde),
-  family = "gaussian",
-  control.predictor = list(A = inla.stack.A(stack), 
-                           compute = TRUE),
-  control.compute = list(return.marginals.predictor = TRUE))   
-  
-summary(fit)
-
-# plot marginal posteriors for the fixed effects
-modfix = fit$summary.fixed
-modfix
-
-par(mgp=c(2.2,0.45,0), tcl=-0.4, mar=c(3.3,4,2,2))
-par(mfrow=c(2,2))
-
-plot(fit$marginals.fix[[1]],type ='l',xlab=expression(beta[0]),ylab="density")
-abline(v = modfix[1, c(3, 5)], lty=2)
-
-plot(fit$marginals.fix[[2]],type ='l',xlab=expression(beta[max.temp]),ylab="density")
-abline(v = modfix[2, c(3, 5)], lty=2)
-
-plot(fit$marginals.fix[[3]],type ='l',xlab=expression(beta[w.speed]),ylab="density")
-abline(v = modfix[3, c(3, 5)], lty=2)
-
-plot(fit$marginals.fix[[4]],type ='l',xlab=expression(beta[rh]),ylab="density")
-abline(v = modfix[4, c(3, 5)], lty=2)
-
-```
 
 
 
