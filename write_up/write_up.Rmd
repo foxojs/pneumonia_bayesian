@@ -45,7 +45,7 @@ Geographic boundaries of the local authorities were obtained via shapefiles, and
 ### Statistical Modelling {-}
 Pneumonia deaths were modelled using a hierarchical Bayesian generalised linear model with a Poisson likelihood and log link function. The logarithm of the expected number of deaths was included as an offset to model standardised mortality ratios (SMRs).
 
-Let $y_{it}$ be the observed number of pneumonia deaths in local authority i at year t, and Eit the expected number of deaths. The model is specified as:
+Let $y_{it}$ be the observed number of pneumonia deaths in local authority $i$ at year $t$, and Eit the expected number of deaths. The model is specified as:
 
 $$
 \begin{aligned}
@@ -72,8 +72,22 @@ Temporal effects $v_t$ were modelled using a first-order random walk (RW1):
 $$
 v_t \mid v_{t-1}, \tau_v \sim \mathcal{N}(v_{t-1}, \tau_v^{-1})
 $$
-With this model, we assume that the risk in each year is similar to the previous one, allowing for a smooth evolution of risk over time, while capturing deviations where supported by the data. All hyperparameters, including $\tau_u$, $\tau_v$, and $\phi$, were assigned penalised complexity (PC) priors, which penalise model complexity in favour of simpler structures unless strongly supported by the data. 
+With this model, we assume that the risk in each year is similar to the previous one, allowing for a smooth evolution of risk over time, while capturing deviations where supported by the data.
 
+### Spatio-Temporal Interaction 
+
+To allow each area to have its own temporal trajectory, Type I spatio-temporal interaction term $\delta_{it}$ was included. This model assumes an independent and identically distributed ($iid$) structure across space and time, capturing additional unstructured space and time variation. Since Type I interaction makes minimal assumptions about the data while still capturing random variations, it was chosen for the model: 
+
+\[
+\eta_{it} = \beta_0 + \beta_1 \cdot \text{IMD}_i + \beta_2 \cdot \text{PA}_i + u_i + v_t + \delta_{it}
+\]
+\[
+\delta_{it} \sim \mathcal{N}(0, \tau_\delta^{-1})
+\]
+
+Interaction was added to the adjusted model, allowing us to assess whether observed spatio-temporal variation could be explained by the covariates.
+
+All hyperparameters, including $\tau_u$, $\tau_v$, and $\phi$, were assigned penalised complexity (PC) priors, which penalise model complexity in favour of simpler structures unless strongly supported by the data. 
 
 # Results
 
@@ -117,7 +131,7 @@ There are several key findings from this analysis. Firstly, pneumonia deaths hav
 
 Our research has contributed to existing literature by further refining potential areas of focus for understanding spatial temporal differences in pneumonia deaths, principally: 1) temporal trends for pneumonia are observed across space, so by looking into the factors of this decreasing trend would allow us to better approach the challenge of pneumonia (and respiratory deaths) 2) deprivation is a possible factor contributing to consistent differences in pneumonia mortality across space. Future research could investigate spatial temporal trends of deprivation and pneumonia at a more granular geographic scale. 
 
-
+\newpage
 # Supplementary material
 
 ```{r precision-models-with-covariates, eval=TRUE, echo=FALSE, out.width="70%"}

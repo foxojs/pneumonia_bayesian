@@ -27,8 +27,8 @@ library(kableExtra)
 ```{r}
 # rstudioapi::getSourceEditorContext()$path
 
-RESP_DATA = read.csv("/Users/jacksonjoseph/Desktop/HDA/Term2/Bayesian/mini_proj/dat/Data_final.csv")
-shape_file = st_read("/Users/jacksonjoseph/Desktop/HDA/Term2/Bayesian/mini_proj/dat/LocalAuthorities.shp")
+RESP_DATA = read.csv("/Users/oliverfox/Documents/Documents/imperial_masters/bayesian/mini_project/data/Data_final.csv")
+shape_file = st_read("/Users/oliverfox/Documents/Documents/imperial_masters/bayesian/mini_project/data/LocalAuthorities_shp/LocalAuthorities.shp")
 ```
 ```{r}
 RESP_DATA
