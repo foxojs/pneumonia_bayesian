@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.12.16)  1 APR 2025 22:00
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.12.16)  1 APR 2025 22:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -773,13 +773,13 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 17118 strings out of 473330
- 275224 string characters out of 5719762
+ 17114 strings out of 473330
+ 275186 string characters out of 5719762
  725328 words of memory out of 5000000
  39749 multiletter control sequences out of 15000+600000
- 646397 words of font info for 183 fonts, out of 8000000 for 9000
+ 646231 words of font info for 181 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 83i,9n,93p,1781b,461s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 83i,9n,93p,1781b,457s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/lo
 cal/texlive/2024/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texliv
 e/2024/texmf-dist/fonts/type1/public/lm/lmbx9.pfb></usr/local/texlive/2024/texm
@@ -792,7 +792,7 @@ live/2024/texmf-dist/fonts/type1/public/lm/lmr9.pfb></usr/local/texlive/2024/te
 xmf-dist/fonts/type1/public/lm/lmri10.pfb></usr/local/texlive/2024/texmf-dist/f
 onts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1
 /public/lm/lmsy7.pfb>
-Output written on write_up.pdf (6 pages, 1873891 bytes).
+Output written on write_up.pdf (6 pages, 1873817 bytes).
 PDF statistics:
  194 PDF objects out of 1000 (max. 8388607)
  147 compressed objects within 2 object streams
