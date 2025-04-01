@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.12.16)  1 APR 2025 21:53
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.12.16)  1 APR 2025 22:00
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -717,55 +717,52 @@ cal/texlive/2024/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texliv
 e/2024/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2024/texmf-d
 ist/fonts/enc/dvips/lm/lm-mathex.enc}]
 
-LaTeX Warning: Reference `(' on page 3 undefined on input line 207.
+LaTeX Warning: Reference `(' on page 3 undefined on input line 205.
 
 <graphics/table_1.png, id=32, 341.275pt x 293.095pt>
 File: graphics/table_1.png Graphic file (type png)
 <use graphics/table_1.png>
-Package pdftex.def Info: graphics/table_1.png  used on input line 211.
-(pdftex.def)             Requested size: 140.92793pt x 121.03287pt.
+Package pdftex.def Info: graphics/table_1.png  used on input line 209.
+(pdftex.def)             Requested size: 103.34666pt x 88.75653pt.
 <graphics/st_with_hparams.png, id=36, 751.80875pt x 506.89375pt>
 File: graphics/st_with_hparams.png Graphic file (type png)
 <use graphics/st_with_hparams.png>
-Package pdftex.def Info: graphics/st_with_hparams.png  used on input line 222.
-(pdftex.def)             Requested size: 281.85587pt x 190.03828pt.
+Package pdftex.def Info: graphics/st_with_hparams.png  used on input line 220.
+(pdftex.def)             Requested size: 187.89914pt x 126.68445pt.
 
 
-[3 <./graphics/table_1.png>]
-<graphics/st_model_covariates_table.png, id=46, 449.68pt x 552.0625pt>
+[3 <./graphics/table_1.png> <./graphics/st_with_hparams.png>]
+<graphics/st_model_covariates_table.png, id=47, 449.68pt x 552.0625pt>
 File: graphics/st_model_covariates_table.png Graphic file (type png)
 <use graphics/st_model_covariates_table.png>
 Package pdftex.def Info: graphics/st_model_covariates_table.png  used on input 
-line 233.
+line 231.
 (pdftex.def)             Requested size: 187.89914pt x 230.67691pt.
-
-
-[4 <./graphics/st_with_hparams.png> <./graphics/st_model_covariates_table.png>]
-<graphics/st_with_int.png, id=55, 811.03pt x 670.505pt>
+<graphics/st_with_int.png, id=49, 811.03pt x 670.505pt>
 File: graphics/st_with_int.png Graphic file (type png)
 <use graphics/st_with_int.png>
-Package pdftex.def Info: graphics/st_with_int.png  used on input line 244.
-(pdftex.def)             Requested size: 234.8775pt x 194.17546pt.
+Package pdftex.def Info: graphics/st_with_int.png  used on input line 242.
+(pdftex.def)             Requested size: 187.89914pt x 155.33832pt.
 
 
-[5 <./graphics/st_with_int.png>]
+[4 <./graphics/st_model_covariates_table.png> <./graphics/st_with_int.png>]
 
-[6]
-<graphics/smooth_and_declining_temporal.png, id=71, 1606.0pt x 501.875pt>
+[5]
+<graphics/smooth_and_declining_temporal.png, id=67, 1606.0pt x 501.875pt>
 File: graphics/smooth_and_declining_temporal.png Graphic file (type png)
 <use graphics/smooth_and_declining_temporal.png>
 Package pdftex.def Info: graphics/smooth_and_declining_temporal.png  used on in
-put line 271.
+put line 265.
 (pdftex.def)             Requested size: 328.82707pt x 102.75485pt.
-<graphics/space_time_interaction.png, id=72, 1606.0pt x 556.0775pt>
+<graphics/space_time_interaction.png, id=68, 1606.0pt x 556.0775pt>
 File: graphics/space_time_interaction.png Graphic file (type png)
 <use graphics/space_time_interaction.png>
 Package pdftex.def Info: graphics/space_time_interaction.png  used on input lin
-e 280.
+e 274.
 (pdftex.def)             Requested size: 422.77664pt x 146.38405pt.
 
 
-[7 <./graphics/smooth_and_declining_temporal.png> <./graphics/space_time_intera
+[6 <./graphics/smooth_and_declining_temporal.png> <./graphics/space_time_intera
 ction.png>] (./write_up.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 1
@@ -776,13 +773,13 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 17117 strings out of 473330
- 275210 string characters out of 5719762
- 724328 words of memory out of 5000000
+ 17118 strings out of 473330
+ 275224 string characters out of 5719762
+ 725328 words of memory out of 5000000
  39749 multiletter control sequences out of 15000+600000
- 646314 words of font info for 182 fonts, out of 8000000 for 9000
+ 646397 words of font info for 183 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 83i,9n,93p,1516b,461s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 83i,9n,93p,1781b,461s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/lo
 cal/texlive/2024/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texliv
 e/2024/texmf-dist/fonts/type1/public/lm/lmbx9.pfb></usr/local/texlive/2024/texm
@@ -795,10 +792,10 @@ live/2024/texmf-dist/fonts/type1/public/lm/lmr9.pfb></usr/local/texlive/2024/te
 xmf-dist/fonts/type1/public/lm/lmri10.pfb></usr/local/texlive/2024/texmf-dist/f
 onts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1
 /public/lm/lmsy7.pfb>
-Output written on write_up.pdf (7 pages, 1874313 bytes).
+Output written on write_up.pdf (6 pages, 1873891 bytes).
 PDF statistics:
- 201 PDF objects out of 1000 (max. 8388607)
- 153 compressed objects within 2 object streams
- 31 named destinations out of 1000 (max. 500000)
+ 194 PDF objects out of 1000 (max. 8388607)
+ 147 compressed objects within 2 object streams
+ 30 named destinations out of 1000 (max. 500000)
  47223 words of extra memory for PDF output out of 51595 (max. 10000000)
 

@@ -87,22 +87,20 @@ To allow each area to have its own temporal trajectory, Type I spatio-temporal i
 \delta_{it} \sim \mathcal{N}(0, \tau_\delta^{-1})
 \]
 
-Interaction was added to the adjusted model, allowing us to assess whether observed spatio-temporal variation could be explained by the covariates.
-
-All hyperparameters, including $\tau_u$, $\tau_v$, and $\phi$, were assigned penalised complexity (PC) priors, which penalise model complexity in favour of simpler structures unless strongly supported by the data. 
+Interaction was added to the adjusted model, allowing us to assess whether observed spatio-temporal variation could be explained by the covariates. All hyperparameters, including $\tau_u$, $\tau_v$, and $\phi$, were assigned penalised complexity (PC) priors, which penalise model complexity in favour of simpler structures unless strongly supported by the data. 
 
 # Results
 
 We identified a trend of reduced total deaths from pneumonia between 2002 and 2017. In 2002, the total deaths from pneumonia were 36,730 and in 2017 this number had fallen to 24,800 individuals. We also noted that the trend of expected deaths was inverse to total deaths @\ref(fig:table-1). Furthermore, the Standardized Morbidity Ratio (SMR) across England showed some areas depicting spatial autocorrelation including the local authorities in and surrounding London, as well as those near Liverpool and Manchester. These areas are characterised by higher SMRs, and thus higher rates of pneumonia deaths than expected. Conversely, the North, South West, and East depict lower SMRs. 
 
-```{r table-1, eval=TRUE, echo=FALSE, out.width="30%", fig.cap = "Figure showing the average observed and expected deaths across all areas for each time period"}
+```{r table-1, eval=TRUE, echo=FALSE, out.width="22%", fig.cap = "Figure showing the average observed and expected deaths across all areas for each time period"}
 knitr::include_graphics("graphics/table_1.png")
 ```
 
 The baseline spatial models (highlighted in Figure \@ref(fig:spatial-only)), fitted with BYM2, depict the Relative Risks (RRs) and Posterior Probabilities (PPs) after smoothing away random noise. The RRs reinforce the trend observed in our SMRs, evidencing the highest RRs spread across inland areas from London to Manchester and Liverpool. The PPs support the evidence that these cities have the highest relative risks of death by pneumonia. The spatial temporal model depicts a similar pattern of RRs and PPs after accounting for time to the purely spatial model. Moreover, Figure \@ref(fig:spatial-only) indicates that the spatially structured component in the purely spatial model explains approximately 40% of the spatial variability, supporting the notion of moderate spatial autocorrelation but conversely suggests a large portion of variability is unexplained by the spatially structured component.
 
 
-```{r spatial-only, eval=TRUE, echo=FALSE, out.width="60%", fig.cap = "Figure highlighting the relative risks and posterior probabilities after smoothing. Note the highest relative risk spread across inland areas from London to Manchester and Liverpool."}
+```{r spatial-only, eval=TRUE, echo=FALSE, out.width="40%", fig.cap = "Figure highlighting the relative risks and posterior probabilities after smoothing. Note the highest relative risk spread across inland areas from London to Manchester and Liverpool."}
 knitr::include_graphics("graphics/st_with_hparams.png")
 ```
 
@@ -112,24 +110,17 @@ After accounting for deprivation and physical activity (both scaled), but not al
 knitr::include_graphics("graphics/st_model_covariates_table.png")
 ```
 
-
 Finally, the spatio-temporal models with Type 1 interaction further underpin the spatial and temporal characteristics highlighted thus far. Inclusion of the interaction substantially reduced the maximum estimated relative risk from approximately 12 to 1.5. The high precision values for both the models with and without covariates (34.46, 40.14) indicate low spatial variability. However, the $\phi$ values for each model indicate strong spatial correlations (76.7%, 85.1%) in the respective models. The precisions for the time components indicate a smooth temporal trend in pneumonia deaths, rather than stark changes between years. This is further reinforced in the Figure \@ref(fig:smooth-and-declining-temporal) (see appendix), depicting the smooth (and declining) temporal residual RRs across the period of study. 
 
-```{r st-with-int, eval=TRUE, echo=FALSE, out.width="50%", fig.cap="Posterior relative risks and posterior probabilities after adjusting for time and covariates."}
+```{r st-with-int, eval=TRUE, echo=FALSE, out.width="40%", fig.cap="Posterior relative risks and posterior probabilities after adjusting for time and covariates."}
 knitr::include_graphics("graphics/st_with_int.png")
 ```
 
-
-The precision for the combined spatial and temporal terms indicates that the changes experienced across the local authorities are more driven by time than differences in space. This notion is further evidenced by the Figure \@ref(fig:space-time-interaction) (see appendix) which shows no clear pattern of space-time interaction across the local authorities in the period of study. 
-
-Lastly, the WAIC values of all the models facilitate model comparison of the spatio-temporal models (as the spatial model is fundamentally different). The WAIC values indicate the best performing model is the spatial temporal model with type 1 time interaction and the covariates (WAIC 39585) compared to the spatio-temporal model with no interaction (WAIC 42885). However, the inclusion of the covariates only lowers the WAIC slightly, evidencing their somewhat limited utility. 
+The precision for the combined spatial and temporal terms indicates that the changes experienced across the local authorities are more driven by time than differences in space. This notion is further evidenced by the Figure \@ref(fig:space-time-interaction) (see appendix) which shows no clear pattern of space-time interaction across the local authorities in the period of study. Lastly, the WAIC values of all the models facilitate model comparison of the spatio-temporal models (as the spatial model is fundamentally different). The WAIC values indicate the best performing model is the spatial temporal model with type 1 time interaction and the covariates (WAIC 39585) compared to the spatio-temporal model with no interaction (WAIC 42885). However, the inclusion of the covariates only lowers the WAIC slightly, evidencing their somewhat limited utility. 
 
 # Discussion 
 
-There are several key findings from this analysis. Firstly, pneumonia deaths have steadily decreased over time, and this trend is largely consistent across local authorities in England. This negative temporal trend is an overall improvement in pneumonia-caused mortality. Secondly, moderate to high levels of spatial structure were observed, with high spatial correlations and a substantive portion of spatial variability (40%) explained by the spatially structured component in the initial spatial model. Furthermore, consistently higher relative risks of death by pneumonia were observed in London and the North West. Inclusion of the time interaction substantially reduced the maximum estimated relative risk. This reduction suggests that much of the extreme spatial risk observed in the simpler model was an artefact of unexplained temporal variation. By modelling time-varying effects, we see more moderate risk estimates and improved model fit. This suggests that the association between deprivation and mortality varied over time, with the interaction allowing our model to capture these temporal changes. The observed spatial autocorrelation implies that local factors beyond deprivation and physical activity might also contribute to pneumonia mortality. 
-
-To summarise, consistent spatial autocorrelation (and differences) were observed across England, and the changes in these spaces were also consistent over the period of study, decreasing over time. Regarding the inclusion of covariates, deprivation was found to be associated with higher pneumonia mortality rates but not physical activity. The association of deprivation and respiratory diseases, including pneumonia, is also consistent with past literature (@Hawker2003). 
-
+There are several key findings from this analysis. Firstly, pneumonia deaths have steadily decreased over time, and this trend is largely consistent across local authorities in England. This negative temporal trend is an overall improvement in pneumonia-caused mortality. Secondly, moderate to high levels of spatial structure were observed, with high spatial correlations and a substantive portion of spatial variability (40%) explained by the spatially structured component in the initial spatial model. Furthermore, consistently higher relative risks of death by pneumonia were observed in London and the North West. Inclusion of the time interaction substantially reduced the maximum estimated relative risk. This reduction suggests that much of the extreme spatial risk observed in the simpler model was an artefact of unexplained temporal variation. By modelling time-varying effects, we see more moderate risk estimates and improved model fit. This suggests that the association between deprivation and mortality varied over time, with the interaction allowing our model to capture these temporal changes. The observed spatial autocorrelation implies that local factors beyond deprivation and physical activity might also contribute to pneumonia mortality. To summarise, consistent spatial autocorrelation (and differences) were observed across England, and the changes in these spaces were also consistent over the period of study, decreasing over time. Regarding the inclusion of covariates, deprivation was found to be associated with higher pneumonia mortality rates but not physical activity. The association of deprivation and respiratory diseases, including pneumonia, is also consistent with past literature (@Hawker2003). 
 
 # Conclusion 
 
