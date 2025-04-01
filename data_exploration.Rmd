@@ -9,14 +9,29 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-rstudioapi::getSourceEditorContext()$path
-library(sf)
-RESP_DATA = read.csv("Data_final.csv")
-shape_file = st_read("LocalAuthorities.shp")
-```
-```{r}
+
+RESP_DATA = read.csv("/Users/oliverfox/Documents/Documents/imperial_masters/bayesian/mini_project/data/Data_final.csv")
+
+RESP_DATA$bins = cut(RESP_DATA$Year_death, breaks = 5)
 RESP_DATA
 ```
+
+```{r}
+library(gt)
+library(dplyr)
+grouped_data = RESP_DATA %>% select(-c(lad09cd, Name, Year_death))
+grouped_data = grouped_data %>% group_by(bins) %>% summarise(
+  Y = mean(Y), 
+  E = mean(E)
+)
+
+grouped_data = grouped_data %>% rename(period = bins, 
+                                       observed = Y, 
+                                       expected = E)
+gt_table = gt(grouped_data) %>% tab_header(title = md("Grouped Data Summary"))
+gt_table                                       
+```
+
 ```{r}
 # we consider yearly pneumonia deaths the equivalent of 'hospital admissions for respiratory conditions in greater glasgow and clyde'
 
